@@ -86,7 +86,7 @@ public with sharing class SOQL {
      * @return The Integer count of Account records.
      * Update the corresponding test class and testGetAccountCount method to cover this method
      */
-    public static Integer GetAccountCount () {
+    public static Integer getAccountCount () {
     //  The body of the method
     return [SELECT COUNT() FROM Account];
     }
@@ -133,7 +133,7 @@ public with sharing class SOQL {
      * @return A list of Opportunity records.
      */
     public static List<Opportunity> getOpportunitiesByNameKeyword(String keyword) {
-        List<Opportunity> opp = [SELECT Id, Name, StageName, CloseDate FROM Opportunity WHERE Name LIKE '%keyword'];
+        List<Opportunity> opp = [SELECT Id, Name, StageName, CloseDate FROM Opportunity WHERE Name LIKE :('%' + keyword + '%')];
         return opp; // Replace null with the variable you used to store the result
     }
 
@@ -270,13 +270,9 @@ public with sharing class SOQL {
         // Create a set to hold the Case Ids
         Set<Id> caseIds = new Set<Id>();
         // Query the Cases
-        List<Case> cases = [SELECT id FROM Case WHERE AccountId = :accountId];
-        // Loop through each Case and add the Id to the set
-        for (Case c_case : cases) {
-            caseIds.add(c_case.Id);
-        }
+        Map<Id, Case> caseMap = new Map<Id, Case>([SELECT Id FROM Case WHERE AccountId = :accountId]);
 
-        return caseIds; // Replace null with the variable you used to store the result
+        return caseMap.keySet(); // Replace null with the variable you used to store the result
     }
 
     /**
